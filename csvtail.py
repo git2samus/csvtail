@@ -2,23 +2,24 @@
 import sys, csv
 from curses import wrapper
 
-# globals to modify from generators without affecting yield signature
-rowpos, rowlen = 0, 0
+class GenRows(object):
+    def __init__(self, f):
+        self.f = f
+        self.rowpos = 0
+        self.rowlen = 0
 
-def genrows(f):
-    """ yield csv rows from file while updating rowpos index """
-    def linegen():
-        """ auxiliary generator to return lines for csv.reader while tracking line length """
-        global rowlen
-        for line in f:
-            rowlen += len(line)
-            yield line
+    def __iter__(self):
+        """ yield csv rows from file while updating rowpos index """
+        def linegen():
+            """ auxiliary generator to return lines for csv.reader while tracking line length """
+            for line in self.f:
+                self.rowlen += len(line)
+                yield line
 
-    global rowpos, rowlen
-    for row in csv.reader(linegen()):
-        yield row
-        rowpos += rowlen
-        rowlen = 0
+        for row in csv.reader(linegen()):
+            yield row
+            self.rowpos += self.rowlen
+            self.rowlen = 0
 
 
 '''
@@ -39,6 +40,7 @@ def main(stdscr):
 if __name__ == '__main__':
     #wrapper(main)
     with open(sys.argv[1]) as f:
-        for row in genrows(f):
-            print rowpos, row
+        genrows = GenRows(f)
+        for row in genrows:
+            print genrows.rowpos, row
 
