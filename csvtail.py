@@ -9,6 +9,7 @@ def with_curses(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         return curses.wrapper(func, *args, **kwargs)
+
     return wrapper
 
 
@@ -45,6 +46,7 @@ def main(stdscr, csv_rows):
 
     # total rows
     num_csv_rows = len(csv_rows)
+
     # calculate maximum width of each column
     csv_colwidths = []
     for csv_row in csv_rows:
@@ -57,18 +59,19 @@ def main(stdscr, csv_rows):
 
     # get (current) screen dimensions
     num_scr_rows, num_scr_cols = stdscr.getmaxyx()
+
     # row and col from which the CSV should start printing
     csv_row_offset, csv_col_offset = 0, 0
 
     # keys we'll respond to, grouped by action
     #TODO ESC has delay for escape sequences
     action_keys = {
-        'quit':   (ord('q'),),
-        'resize': (curses.KEY_RESIZE,),
-        'up':     (ord('k'), curses.KEY_UP,),
-        'down':   (ord('j'), curses.KEY_DOWN,),
-        'left':   (ord('h'), curses.KEY_LEFT,),
-        'right':  (ord('l'), curses.KEY_RIGHT,),
+        'quit':   set((ord('q'),)),
+        'resize': set((curses.KEY_RESIZE,)),
+        'up':     set((ord('k'), curses.KEY_UP,)),
+        'down':   set((ord('j'), curses.KEY_DOWN,)),
+        'left':   set((ord('h'), curses.KEY_LEFT,)),
+        'right':  set((ord('l'), curses.KEY_RIGHT,)),
     }
     movement_keys = set(
         key
