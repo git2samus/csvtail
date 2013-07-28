@@ -18,7 +18,7 @@ def main(stdscr, csv_rows):
     def format_field(csv_field_i, csv_field):
         #TODO color \n replacements
         field = csv_field.replace("\n", u"\u23CE")  # 'RETURN SYMBOL' (U+23CE)
-        colwidth = csv_colwidths[csv_field_i]
+        colwidth = csv_colwidths[csv_field_i + csv_col_offset]
 
         result = '{{field:>{colwidth}}}'
         result = result.format(colwidth=colwidth)
