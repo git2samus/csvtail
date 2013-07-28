@@ -79,7 +79,10 @@ def main(stdscr, csv_rows):
         for key in action_keys[action]
     )
 
-    # initial screen
+    # additional properties
+    curses.curs_set(0)
+
+    # paint initial screen
     update_scr()
 
     # main loop
