@@ -14,23 +14,45 @@ def with_curses(func):
 
 @with_curses
 def main(stdscr, csv_rows):
+    def format_field(csv_field_i, csv_field):
+        #TODO color \n replacements
+        field = csv_field.replace("\n", u"\u23CE")  # 'RETURN SYMBOL' (U+23CE)
+        colwidth = csv_colwidths[csv_field_i]
+
+        result = '{{field:>{colwidth}}}'
+        result = result.format(colwidth=colwidth)
+        result = result.format(field=field)
+
+        return result
+
     def update_scr():
-        stdscr.clear()
-        stdscr.addstr(0, 0, '{}-{} ({}x{})'.format(
-            csv_row_offset, csv_col_offset,
-            num_scr_rows, num_scr_cols,
-        ))
+        stdscr.clear()  # clear screen and mark for refresh
+
+        # rows from CSV that are visible
+        row_slice = slice(csv_row_offset, csv_row_offset + num_scr_rows)
+        for scr_row_i, csv_row in enumerate(csv_rows[row_slice]):
+            # pad each visible field to optimum width and create grid
+            rowtext = (
+                format_field(csv_field_i, csv_field)
+                for csv_field_i, csv_field
+                in enumerate(csv_row[csv_col_offset:])
+            )
+            rowtext = '|'.join(rowtext)
+            rowtext = '|{}|'.format(rowtext)
+
+            # draw a line (no longer than the terminal's width)
+            stdscr.addnstr(scr_row_i, 0, rowtext, num_scr_cols)
 
     # total rows
     num_csv_rows = len(csv_rows)
     # calculate maximum width of each column
     csv_colwidths = []
     for csv_row in csv_rows:
-        for csv_cell_i, csv_cell in enumerate(csv_row):
-            if len(csv_colwidths) <= csv_cell_i:
+        for csv_field_i, csv_field in enumerate(csv_row):
+            if len(csv_colwidths) <= csv_field_i:
                 csv_colwidths.append(0)
-            csv_colwidths[csv_cell_i] = max(
-                csv_colwidths[csv_cell_i], len(csv_cell)
+            csv_colwidths[csv_field_i] = max(
+                csv_colwidths[csv_field_i], len(csv_field)
             )
 
     # get (current) screen dimensions
