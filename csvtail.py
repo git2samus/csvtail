@@ -4,12 +4,15 @@ import csv
 import curses
 from functools import wraps
 
+RETURN_SYMBOL = u"\u23CE"
+
 
 def with_curses(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         return curses.wrapper(func, *args, **kwargs)
 
+    # return wrapped function
     return wrapper
 
 
@@ -17,7 +20,7 @@ def with_curses(func):
 def main(stdscr, csv_rows):
     def format_field(csv_field_i, csv_field):
         #TODO color \n replacements
-        field = csv_field.replace("\n", u"\u23CE")  # 'RETURN SYMBOL' (U+23CE)
+        field = csv_field.replace("\n", RETURN_SYMBOL)
         colwidth = csv_colwidths[csv_field_i + csv_col_offset]
 
         result = '{{field:>{colwidth}}}'
