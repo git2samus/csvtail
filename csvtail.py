@@ -58,12 +58,10 @@ def main(stdscr, csv_rows):
 if __name__ == '__main__':
     # load entire CSV in memory
     #TODO get csv.reader arguments from sys.argv
-    if len(sys.argv) > 1:
-        fname = sys.argv[1]
-        with open(fname) as fobj:
-            csv_rows = tuple(csv.reader(fobj))
-    else:
-        csv_rows = tuple(csv.reader(sys.stdin))
+    #TODO work around stdin to read files and keys
+    fname = sys.argv[1]
+    with open(fname) as fobj:
+        csv_rows = tuple(csv.reader(fobj))
 
     # start curses
     main(csv_rows)
