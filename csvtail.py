@@ -4,7 +4,7 @@ import csv
 import curses
 from functools import wraps
 
-RETURN_SYMBOL = u"\u23CE"
+RETURN_SYMBOL = "\u23CE"
 
 
 def with_curses(func):
