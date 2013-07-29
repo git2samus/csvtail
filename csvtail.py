@@ -47,6 +47,7 @@ def main(stdscr, csv_rows):
             # draw a line (no longer than the terminal's width)
             stdscr.addnstr(scr_row_i, 0, rowtext, num_scr_cols)
 
+    ## measure CSV
     # total rows
     num_csv_rows = len(csv_rows)
 
@@ -82,23 +83,26 @@ def main(stdscr, csv_rows):
         for key in action_keys[action]
     )
 
-    # additional properties
+    ## additional properties
+    # hide cursor
     curses.curs_set(0)
 
-    # paint initial screen
+    # initial screen
     update_scr()
 
-    # main loop
+    ## main loop
     while True:
-        key = stdscr.getch()  # this calls stdscr.refresh()
+        # stdscr.getch() calls stdscr.refresh()
+        key = stdscr.getch()
 
         if key in action_keys['quit']:
             break  # exit main loop
-        elif key in action_keys['resize']:
+
+        if key in action_keys['resize']:
             # update screen dimensions
             num_scr_rows, num_scr_cols = stdscr.getmaxyx()
-            # mark screen for redraw to avoid clipping issues
-            curses.doupdate()
+            # repaint the screen in case it got larger for clipped content
+            update_scr()
         elif key in movement_keys:
             #TODO else offset (curses.flash/curses.beep?)
             if key in action_keys['up']:
@@ -113,7 +117,6 @@ def main(stdscr, csv_rows):
             elif key in action_keys['right']:
                 if csv_col_offset < len(csv_colwidths) - 1:
                     csv_col_offset += 1
-
             # update screen buffer
             update_scr()
 
