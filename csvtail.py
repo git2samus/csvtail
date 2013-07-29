@@ -104,19 +104,26 @@ def main(stdscr, csv_rows):
             # repaint the screen in case it got larger for clipped content
             update_scr()
         elif key in movement_keys:
-            #TODO else offset (curses.flash/curses.beep?)
             if key in action_keys['up']:
                 if csv_row_offset > 0:
                     csv_row_offset -= 1
+                else:
+                    continue
             elif key in action_keys['down']:
                 if csv_row_offset < num_csv_rows - 1:
                     csv_row_offset += 1
+                else:
+                    continue
             elif key in action_keys['left']:
                 if csv_col_offset > 0:
                     csv_col_offset -= 1
+                else:
+                    continue
             elif key in action_keys['right']:
                 if csv_col_offset < len(csv_colwidths) - 1:
                     csv_col_offset += 1
+                else:
+                    continue
             # update screen buffer
             update_scr()
 
