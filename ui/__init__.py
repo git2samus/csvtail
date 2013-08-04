@@ -1,15 +1,6 @@
 import curses
-from functools import wraps
 from ui.view import View, ScrollOffsetException
-
-
-def with_curses(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return curses.wrapper(func, *args, **kwargs)
-
-    # return wrapped function
-    return wrapper
+from decorator import with_curses
 
 
 # keys we'll respond to, grouped by action
