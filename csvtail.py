@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 import sys
-from ui import interface
-from models import CSV
+from decorator import with_curses
+from ui.interface import Interface
+
+
+@with_curses
+def run_interface(stdscr, *csv_fnames):
+    interface = Interface(*csv_fnames)
+    interface.run(stdscr)
 
 
 if __name__ == '__main__':
@@ -9,7 +15,4 @@ if __name__ == '__main__':
     #TODO commandline args
     #TODO error messages
     csv_fnames = sys.argv[1:]
-    csv_models = (CSV(fname) for fname in csv_fnames)
-
-    # start curses
-    interface(*csv_models)
+    run_interface(*csv_fnames)
